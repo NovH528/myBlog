@@ -5,7 +5,8 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
+// 新增：导入自定义布局（无侧边栏）
+import MyLayout from '@/layout/MyLayout'
 /**
  * Note: 路由配置项
  *
@@ -61,6 +62,21 @@ export const constantRoutes = [
     component: () => import('@/views/error/401'),
     hidden: true
   },
+// 新增：自定义首页路由（使用无侧边栏布局）
+  {
+    path: '/my-home',
+    component: MyLayout,
+    children: [
+      {
+        path: '',  // 空路径表示默认显示该组件
+        component: () => import('@/views/myHome/index'),  // 指向你的首页组件
+        name: 'MyHome',
+        meta: { title: '我的首页', icon: 'home', noCache: true }
+      }
+    ]
+  },
+
+// 原有后台首页路由（保持不变）
   {
     path: '',
     component: Layout,
@@ -179,5 +195,9 @@ Router.prototype.replace = function push(location) {
 export default new Router({
   mode: 'history', // 去掉url中的#
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  // 新增：默认路由重定向到自定义首页
+  routes: [
+    { path: '/', redirect: '/my-home' },  // 访问根路径时跳转到你的首页
+    ...constantRoutes  // 保留原有所有路由
+  ]
 })
