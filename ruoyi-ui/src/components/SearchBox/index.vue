@@ -60,7 +60,13 @@ export default {
       const keyword = this.keyword.trim();
       if (!keyword) return;
       this.addHistory(keyword);
-      this.$emit('search', keyword);
+
+      // 方案1：直接跳转到百度搜索结果页
+      window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(keyword)}`, '_blank');
+
+      // 方案2：通过后端代理（避免跨域），后续讲解
+      // this.$emit('search', keyword);
+
       this.showHistory = false;
     },
 
@@ -151,6 +157,7 @@ export default {
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   padding: 15px;
   z-index: 100;
+  color: #333; /* 设置为深色，与背景区分开，可根据实际设计调整 */
 }
 
 .history-header {
