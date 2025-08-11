@@ -75,6 +75,13 @@ export const constantRoutes = [
       }
     ]
   },
+  // 新增：搜索结果页路由（放在这里）
+  {
+    path: '/search/result',
+    component: () => import('@/views/search/Result'), // 对应你的搜索结果页组件
+    hidden: true, // 不在侧边栏显示
+    meta: { title: '搜索结果' } // 可选，用于面包屑等
+  },
 
 // 原有后台首页路由（保持不变）
   {

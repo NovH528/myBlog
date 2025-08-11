@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dream.mapper.BlogLikeMapper">
+    
+    <resultMap type="BlogLike" id="BlogLikeResult">
+        <result property="id"    column="id"    />
+        <result property="blogId"    column="blog_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="likeTime"    column="like_time"    />
+    </resultMap>
+
+    <sql id="selectBlogLikeVo">
+        select id, blog_id, user_id, like_time from blog_like
+    </sql>
+
+    <select id="selectBlogLikeList" parameterType="BlogLike" resultMap="BlogLikeResult">
+        <include refid="selectBlogLikeVo"/>
+        <where>  
+            <if test="blogId != null "> and blog_id = #{blogId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="likeTime != null "> and like_time = #{likeTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlogLikeById" parameterType="Long" resultMap="BlogLikeResult">
+        <include refid="selectBlogLikeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBlogLike" parameterType="BlogLike" useGeneratedKeys="true" keyProperty="id">
+        insert into blog_like
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">blog_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="likeTime != null">like_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">#{blogId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="likeTime != null">#{likeTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlogLike" parameterType="BlogLike">
+        update blog_like
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="blogId != null">blog_id = #{blogId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="likeTime != null">like_time = #{likeTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlogLikeById" parameterType="Long">
+        delete from blog_like where id = #{id}
+    </delete>
+
+    <delete id="deleteBlogLikeByIds" parameterType="String">
+        delete from blog_like where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
