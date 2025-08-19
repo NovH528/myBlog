@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dream.mapper.CommentMapper">
+    
+    <resultMap type="Comment" id="CommentResult">
+        <result property="id"    column="id"    />
+        <result property="blogId"    column="blog_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="imageUrls"    column="image_urls"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="replyToUserId"    column="reply_to_user_id"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectCommentVo">
+        select id, blog_id, user_id, content, image_urls, parent_id, reply_to_user_id, like_count, is_deleted, create_time from comment
+    </sql>
+
+    <select id="selectCommentList" parameterType="Comment" resultMap="CommentResult">
+        <include refid="selectCommentVo"/>
+        <where>  
+            <if test="blogId != null "> and blog_id = #{blogId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="imageUrls != null  and imageUrls != ''"> and image_urls = #{imageUrls}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="replyToUserId != null "> and reply_to_user_id = #{replyToUserId}</if>
+            <if test="likeCount != null "> and like_count = #{likeCount}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommentById" parameterType="Long" resultMap="CommentResult">
+        <include refid="selectCommentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">blog_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="content != null">content,</if>
+            <if test="imageUrls != null">image_urls,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="replyToUserId != null">reply_to_user_id,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">#{blogId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="imageUrls != null">#{imageUrls},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="replyToUserId != null">#{replyToUserId},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateComment" parameterType="Comment">
+        update comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="blogId != null">blog_id = #{blogId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="imageUrls != null">image_urls = #{imageUrls},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="replyToUserId != null">reply_to_user_id = #{replyToUserId},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommentById" parameterType="Long">
+        delete from comment where id = #{id}
+    </delete>
+
+    <delete id="deleteCommentByIds" parameterType="String">
+        delete from comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

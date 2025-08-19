@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dream.mapper.BlogShareMapper">
+    
+    <resultMap type="BlogShare" id="BlogShareResult">
+        <result property="id"    column="id"    />
+        <result property="blogId"    column="blog_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="sharePlatform"    column="share_platform"    />
+        <result property="shareTime"    column="share_time"    />
+        <result property="shareIp"    column="share_ip"    />
+    </resultMap>
+
+    <sql id="selectBlogShareVo">
+        select id, blog_id, user_id, share_platform, share_time, share_ip from blog_share
+    </sql>
+
+    <select id="selectBlogShareList" parameterType="BlogShare" resultMap="BlogShareResult">
+        <include refid="selectBlogShareVo"/>
+        <where>  
+            <if test="blogId != null "> and blog_id = #{blogId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="sharePlatform != null  and sharePlatform != ''"> and share_platform = #{sharePlatform}</if>
+            <if test="shareTime != null "> and share_time = #{shareTime}</if>
+            <if test="shareIp != null  and shareIp != ''"> and share_ip = #{shareIp}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlogShareById" parameterType="Long" resultMap="BlogShareResult">
+        <include refid="selectBlogShareVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBlogShare" parameterType="BlogShare" useGeneratedKeys="true" keyProperty="id">
+        insert into blog_share
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">blog_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="sharePlatform != null">share_platform,</if>
+            <if test="shareTime != null">share_time,</if>
+            <if test="shareIp != null">share_ip,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">#{blogId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="sharePlatform != null">#{sharePlatform},</if>
+            <if test="shareTime != null">#{shareTime},</if>
+            <if test="shareIp != null">#{shareIp},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlogShare" parameterType="BlogShare">
+        update blog_share
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="blogId != null">blog_id = #{blogId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="sharePlatform != null">share_platform = #{sharePlatform},</if>
+            <if test="shareTime != null">share_time = #{shareTime},</if>
+            <if test="shareIp != null">share_ip = #{shareIp},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlogShareById" parameterType="Long">
+        delete from blog_share where id = #{id}
+    </delete>
+
+    <delete id="deleteBlogShareByIds" parameterType="String">
+        delete from blog_share where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

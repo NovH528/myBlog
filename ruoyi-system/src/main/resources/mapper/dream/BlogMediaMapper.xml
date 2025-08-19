@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dream.mapper.BlogMediaMapper">
+    
+    <resultMap type="BlogMedia" id="BlogMediaResult">
+        <result property="id"    column="id"    />
+        <result property="blogId"    column="blog_id"    />
+        <result property="mediaUrl"    column="media_url"    />
+        <result property="mediaType"    column="media_type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="sort"    column="sort"    />
+        <result property="uploadTime"    column="upload_time"    />
+    </resultMap>
+
+    <sql id="selectBlogMediaVo">
+        select id, blog_id, media_url, media_type, file_name, file_size, sort, upload_time from blog_media
+    </sql>
+
+    <select id="selectBlogMediaList" parameterType="BlogMedia" resultMap="BlogMediaResult">
+        <include refid="selectBlogMediaVo"/>
+        <where>  
+            <if test="blogId != null "> and blog_id = #{blogId}</if>
+            <if test="mediaUrl != null  and mediaUrl != ''"> and media_url = #{mediaUrl}</if>
+            <if test="mediaType != null "> and media_type = #{mediaType}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="fileSize != null "> and file_size = #{fileSize}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="uploadTime != null "> and upload_time = #{uploadTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlogMediaById" parameterType="Long" resultMap="BlogMediaResult">
+        <include refid="selectBlogMediaVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBlogMedia" parameterType="BlogMedia" useGeneratedKeys="true" keyProperty="id">
+        insert into blog_media
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">blog_id,</if>
+            <if test="mediaUrl != null and mediaUrl != ''">media_url,</if>
+            <if test="mediaType != null">media_type,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="sort != null">sort,</if>
+            <if test="uploadTime != null">upload_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">#{blogId},</if>
+            <if test="mediaUrl != null and mediaUrl != ''">#{mediaUrl},</if>
+            <if test="mediaType != null">#{mediaType},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlogMedia" parameterType="BlogMedia">
+        update blog_media
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="blogId != null">blog_id = #{blogId},</if>
+            <if test="mediaUrl != null and mediaUrl != ''">media_url = #{mediaUrl},</if>
+            <if test="mediaType != null">media_type = #{mediaType},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlogMediaById" parameterType="Long">
+        delete from blog_media where id = #{id}
+    </delete>
+
+    <delete id="deleteBlogMediaByIds" parameterType="String">
+        delete from blog_media where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

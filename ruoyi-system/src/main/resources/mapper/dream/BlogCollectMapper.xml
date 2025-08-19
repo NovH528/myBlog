@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dream.mapper.BlogCollectMapper">
+    
+    <resultMap type="BlogCollect" id="BlogCollectResult">
+        <result property="id"    column="id"    />
+        <result property="blogId"    column="blog_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="collectTime"    column="collect_time"    />
+        <result property="folderId"    column="folder_id"    />
+    </resultMap>
+
+    <sql id="selectBlogCollectVo">
+        select id, blog_id, user_id, collect_time, folder_id from blog_collect
+    </sql>
+
+    <select id="selectBlogCollectList" parameterType="BlogCollect" resultMap="BlogCollectResult">
+        <include refid="selectBlogCollectVo"/>
+        <where>  
+            <if test="blogId != null "> and blog_id = #{blogId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="collectTime != null "> and collect_time = #{collectTime}</if>
+            <if test="folderId != null "> and folder_id = #{folderId}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlogCollectById" parameterType="Long" resultMap="BlogCollectResult">
+        <include refid="selectBlogCollectVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBlogCollect" parameterType="BlogCollect" useGeneratedKeys="true" keyProperty="id">
+        insert into blog_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">blog_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="collectTime != null">collect_time,</if>
+            <if test="folderId != null">folder_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blogId != null">#{blogId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="collectTime != null">#{collectTime},</if>
+            <if test="folderId != null">#{folderId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlogCollect" parameterType="BlogCollect">
+        update blog_collect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="blogId != null">blog_id = #{blogId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="collectTime != null">collect_time = #{collectTime},</if>
+            <if test="folderId != null">folder_id = #{folderId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlogCollectById" parameterType="Long">
+        delete from blog_collect where id = #{id}
+    </delete>
+
+    <delete id="deleteBlogCollectByIds" parameterType="String">
+        delete from blog_collect where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
